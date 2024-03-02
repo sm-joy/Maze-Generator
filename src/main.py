@@ -3,9 +3,11 @@ import CELL
 from sys import exit
 import os
 
+parentDir = os.path.dirname(__file__)[0 : len(os.path.dirname(__file__))-4]
+
 pg.init()
 pg.display.set_caption("Maze Creator")
-pg.display.set_icon(pg.image.load(os.path.join(os.path.dirname(__file__)[0 : len(os.path.dirname(__file__))-4], "res", "icon.png")))
+pg.display.set_icon(pg.image.load(os.path.join(parentDir, "res", "icon.png")))
 
 WINDOW_WIDTH, WINDOW_HEIGHT = 700, 700
 WINDOW = pg.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
@@ -17,6 +19,12 @@ CELL_WIDTH = 70
 COLS, ROWS = int(WINDOW_WIDTH / CELL_WIDTH), int(WINDOW_HEIGHT / CELL_WIDTH)
 START_ROW, START_COLUMN = 0, 0
 END_ROW, END_COLUMN = ROWS-1, COLS-1
+
+
+
+def saveFrame() -> None:
+    pg.image.save(WINDOW, os.path.join(parentDir, "res", "maze_images", f"maze.png"))
+    print("Image Saved Successfully")
 
 
 def main() -> int:
@@ -46,6 +54,8 @@ def main() -> int:
             elif event.type == pg.KEYDOWN:
                 if event.key == pg.K_SPACE:
                     slowMotion = True
+                elif (event.key == pg.K_s) and (pg.key.get_mods() & pg.KMOD_CTRL) and mazeCreated:
+                    saveFrame()
             elif event.type == pg.KEYUP:
                 if event.key == pg.K_SPACE:
                     slowMotion = False
