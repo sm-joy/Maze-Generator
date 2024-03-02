@@ -1,17 +1,19 @@
-import pygame
+import pygame as pg
 import CELL
 from sys import exit
+import os
 
-pygame.init()
-pygame.display.set_caption("Maze Creator")
+pg.init()
+pg.display.set_caption("Maze Creator")
+pg.display.set_icon(pg.image.load(os.path.join(os.path.dirname(__file__)[0 : len(os.path.dirname(__file__))-4], "res", "icon.png")))
 
 WINDOW_WIDTH, WINDOW_HEIGHT = 700, 700
-WINDOW = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
-CLOCK = pygame.time.Clock()
+WINDOW = pg.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
+CLOCK = pg.time.Clock()
 
-FPS = 300  # Control frames per second (since it's not a dynamic program, the FPS should be constant)
+FPS = 120  # Control frames per second (since it's not a dynamic program, the FPS should be constant)
 SLOW_MOTION_FPS = 10
-CELL_WIDTH = 20
+CELL_WIDTH = 70
 COLS, ROWS = int(WINDOW_WIDTH / CELL_WIDTH), int(WINDOW_HEIGHT / CELL_WIDTH)
 START_ROW, START_COLUMN = 0, 0
 END_ROW, END_COLUMN = ROWS-1, COLS-1
@@ -38,14 +40,14 @@ def main() -> int:
 # Main loop
     while not QUIT:
     # Check for events
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
+        for event in pg.event.get():
+            if event.type == pg.QUIT:
                 QUIT = True
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE:
+            elif event.type == pg.KEYDOWN:
+                if event.key == pg.K_SPACE:
                     slowMotion = True
-            elif event.type == pygame.KEYUP:
-                if event.key == pygame.K_SPACE:
+            elif event.type == pg.KEYUP:
+                if event.key == pg.K_SPACE:
                     slowMotion = False
 
     # Update
@@ -90,7 +92,7 @@ def main() -> int:
                 mazeCreated = True
 
     # Render
-
+        WINDOW.fill("#F5F5F5") #Background Color
         for row in range(ROWS):
             for col in range(COLS):
                 x = col * CELL_WIDTH
@@ -98,40 +100,40 @@ def main() -> int:
 
             # Draw the visited cell
                 if cells[row][col].visited:
-                    cellRect = pygame.Rect(x, y, CELL_WIDTH, CELL_WIDTH)
-                    pygame.draw.rect(surface=WINDOW, color="Purple", rect=cellRect)
+                    cellRect = pg.Rect(x, y, CELL_WIDTH, CELL_WIDTH)
+                    pg.draw.rect(surface=WINDOW, color="#FFC0CB" if not mazeCreated else "Purple", rect=cellRect)
 
             # Draw the walls of individual cells
                 if cells[row][col].walls["top"]:
-                    pygame.draw.line(surface=WINDOW, color="white", start_pos=(x, y), end_pos=(x + CELL_WIDTH, y))  # top
+                    pg.draw.line(surface=WINDOW, color="#001F3F" if not mazeCreated else "White", start_pos=(x, y), end_pos=(x + CELL_WIDTH, y))  # top
                 if cells[row][col].walls["bottom"]:
-                    pygame.draw.line(surface=WINDOW, color="white", start_pos=(x, y + CELL_WIDTH), end_pos=(x + CELL_WIDTH, y + CELL_WIDTH))  # bottom
+                    pg.draw.line(surface=WINDOW, color="#001F3F" if not mazeCreated else "White", start_pos=(x, y + CELL_WIDTH), end_pos=(x + CELL_WIDTH, y + CELL_WIDTH))  # bottom
                 if cells[row][col].walls["left"]:
-                    pygame.draw.line(surface=WINDOW, color="white", start_pos=(x, y), end_pos=(x, y + CELL_WIDTH))  # left
+                    pg.draw.line(surface=WINDOW, color="#001F3F" if not mazeCreated else "White", start_pos=(x, y), end_pos=(x, y + CELL_WIDTH))  # left
                 if cells[row][col].walls["right"]:
-                    pygame.draw.line(surface=WINDOW, color="white", start_pos=(x + CELL_WIDTH, y), end_pos=(x + CELL_WIDTH, y + CELL_WIDTH))  # right
+                    pg.draw.line(surface=WINDOW, color="#001F3F" if not mazeCreated else "White", start_pos=(x + CELL_WIDTH, y), end_pos=(x + CELL_WIDTH, y + CELL_WIDTH))  # right
         
     
         if mazeCreated:
-            startCell_rect = pygame.Rect(START_COLUMN*CELL_WIDTH, START_ROW*CELL_WIDTH, CELL_WIDTH, CELL_WIDTH)
-            pygame.draw.rect(surface=WINDOW, color="Green", rect=startCell_rect)
+            startCell_rect = pg.Rect(START_COLUMN*CELL_WIDTH, START_ROW*CELL_WIDTH, CELL_WIDTH, CELL_WIDTH)
+            pg.draw.rect(surface=WINDOW, color="#006400", rect=startCell_rect)
 
-            endCell_rect = pygame.Rect(END_COLUMN*CELL_WIDTH, END_ROW*CELL_WIDTH, CELL_WIDTH, CELL_WIDTH)
-            pygame.draw.rect(surface=WINDOW, color="Red", rect=endCell_rect)
+            endCell_rect = pg.Rect(END_COLUMN*CELL_WIDTH, END_ROW*CELL_WIDTH, CELL_WIDTH, CELL_WIDTH)
+            pg.draw.rect(surface=WINDOW, color="#8B0000", rect=endCell_rect)
         else:
         #Draw the current cell
-            current_cellRect = pygame.Rect(currentCol * CELL_WIDTH, currentRow * CELL_WIDTH, CELL_WIDTH, CELL_WIDTH)
-            pygame.draw.rect(surface=WINDOW, color="Blue", rect=current_cellRect)
+            current_cellRect = pg.Rect(currentCol * CELL_WIDTH, currentRow * CELL_WIDTH, CELL_WIDTH, CELL_WIDTH)
+            pg.draw.rect(surface=WINDOW, color="#008080", rect=current_cellRect)
 
     # Pygame update
-        pygame.display.flip()
+        pg.display.flip()
         if slowMotion:
             CLOCK.tick(SLOW_MOTION_FPS)
         else:
             CLOCK.tick(FPS)
 
 # Pygame quit
-    pygame.quit()
+    pg.quit()
     exit()
     return 0
 
